@@ -1,62 +1,13 @@
 {
-  "name": "nyamsika_lan_app",
+  "name": "nyamsika-server",
   "version": "1.0.0",
-  "description": "Nyamsika LAN Communication App",
-  "main": "electron/main.js",
+  "main": "server/index.js",
   "scripts": {
-    "start": "node server/index.js",
-    "electron": "electron .",
-    "electron:build": "electron-builder",
-    "cap:init": "npx cap init",
-    "cap:add:android": "npx cap add android",
-    "cap:sync": "npx cap sync android",
-    "cap:open": "npx cap open android",
-    "cap:build": "cd android && ./gradlew assembleDebug",
-    "build:apk": "npm run cap:sync && npm run cap:build"
+    "start": "node server/index.js"
   },
-  "keywords": [
-    "chat",
-    "lan",
-    "communication",
-    "voice-call",
-    "video-call"
-  ],
-  "author": "SYLVANUS",
-  "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "express": "^5.2.1",
-    "multer": "^2.1.1",
-    "qrcode": "^1.5.4",
-    "socket.io": "^4.8.3",
-    "sqlite3": "^6.0.1"
-  },
-  "devDependencies": {
-    "@capacitor/android": "^6.2.1",
-    "@capacitor/cli": "^6.2.1",
-    "@capacitor/core": "^6.2.1",
-    "electron": "^41.5.0",
-    "electron-builder": "^24.13.3",
-    "electron-packager": "^17.1.2"
-  },
-  "build": {
-    "appId": "com.nyamsika.lanapp",
-    "productName": "Nyamsika LAN",
-    "directories": {
-      "output": "dist-desktop"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "build/icons/icon.ico"
-    },
-    "linux": {
-      "target": "AppImage",
-      "icon": "build/icons/icon.png"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true
-    }
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "socket.io": "^4.6.1"
   }
 }
