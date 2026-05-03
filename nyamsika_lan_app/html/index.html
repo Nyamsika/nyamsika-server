@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>__APP_NAME__</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div id="notice" class="notice"></div>
+  <div id="overlay" class="overlay"><div id="modalBox" class="modal"></div></div>
+  <div id="mobileMask" class="mobile-mask" onclick="closeSidePanel()"></div>
+  <div id="voiceRecordingIndicator" class="voice-recording-indicator">🎙️ Recording... <span id="recordingTime">0:00</span></div>
+
+  <div id="callContainer" class="call-container">
+    <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
+    <video id="localVideo" class="local-video" autoplay playsinline muted></video>
+    <audio id="remoteAudio" autoplay playsinline></audio>
+    <div class="call-controls">
+      <button class="call-control-btn call-mute-btn" onclick="toggleMute()">🎤</button>
+      <button class="call-control-btn call-video-btn" onclick="toggleLocalVideo()">📹</button>
+      <button class="call-control-btn call-end-btn" onclick="hangUp()">📞</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <div id="authScreen" class="auth-wrap">
+      <div class="auth-card">
+        <div class="brand">
+          <div class="brand-badge">NY</div>
+          <div>
+            <h1>__APP_NAME__</h1>
+            <p class="muted small">Connect and chat on the same network</p>
+          </div>
+        </div>
+
+        <div class="hero-strip">
+          <div class="hero-card"><strong>SQLite</strong><div class="muted small">Stores all messages</div></div>
+          <div class="hero-card"><strong>QR Join</strong><div class="muted small">Protected QR access</div></div>
+          <div class="hero-card"><strong>Group + Direct</strong><div class="muted small">Chat like WhatsApp</div></div>
+        </div>
+
+        <div class="field">
+          <label>Your display name</label>
+          <input id="displayName" class="input" maxlength="32" placeholder="Enter your name" />
+        </div>
+
+        <div class="field">
+          <label>Access password</label>
+          <div class="password-wrap">
+            <input id="accessPassword" class="input" type="password" placeholder="Enter access password" />
+            <button type="button" class="toggle-eye" onclick="toggleVisibility('accessPassword', this)">Show</button>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:16px;">
+          <button class="btn btn-primary" onclick="enterApp()">Enter chat</button>
+          <button class="btn btn-soft" onclick="openQrGuard()">Open QR</button>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button class="btn btn-soft" onclick="openPasswordManager()">Change passwords</button>
+        </div>
+
+        <p class="muted small" style="margin-top:14px;">Ingiza Neno siri sahihi.</p>
+      </div>
+    </div>
+
+    <div id="appScreen" class="hidden">
+      <div class="topbar">
+        <div class="topbar-left">
+          <button class="btn btn-soft mobile-only" style="width:auto;padding:6px 10px;" onclick="openSidePanel()">Chats</button>
+          <div class="brand-badge">NY</div>
+          <div style="min-width:0;">
+            <h2>__APP_NAME__</h2>
+            <div class="muted small" style="color:#d3d9dd;"></div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="online-pill"><span class="dot"></span><span id="onlineCount">0</span></div>
+          <button class="btn btn-soft desktop-only" onclick="openQrGuard()">QR</button>
+          <button class="btn btn-soft desktop-only" onclick="openPasswordManager()">Keys</button>
+          <button class="btn btn-soft desktop-only" onclick="logout()">Exit</button>
+          <button class="btn menu-btn mobile-only" onclick="openMobileMenu()">☰</button>
+        </div>
+      </div>
+
+      <div class="main">
+        <aside id="sidePanel" class="side">
+          <div class="side-head">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;">
+              <div>
+                <h3>Chats</h3>
+                <p class="muted small">Tap user for private chat</p>
+              </div>
+              <button class="btn btn-soft mobile-only" style="width:auto;padding:6px 10px;" onclick="closeSidePanel()">Close</button>
+            </div>
+          </div>
+
+          <div class="side-body">
+            <div class="device active" data-chat="group" onclick="selectChat('group')">
+              <div class="device-left">
+                <div class="avatar">G</div>
+                <div style="min-width:0;">
+                  <div style="font-weight:800;">Group chat</div>
+                  <div class="muted small"></div>
+                </div>
+              </div>
+              <span class="chip blue">Public</span>
+            </div>
+
+            <div class="tool-card">
+              <div style="font-weight:800;margin-bottom:4px;">You</div>
+              <div id="myIdentity" class="muted small">Not connected</div>
+            </div>
+
+            <div class="tool-card online-card">
+              <div style="font-weight:800;margin-bottom:8px;">Online</div>
+              <div id="onlineUsers" class="online-users"></div>
+            </div>
+
+            <div class="mobile-only" style="display:flex;gap:8px;margin-top:auto;">
+              <button class="btn btn-soft" onclick="openPasswordManager()">Passwords</button>
+              <button class="btn btn-soft" onclick="logout()">Logout</button>
+            </div>
+          </div>
+        </aside>
+
+        <section class="chat-panel">
+          <div class="chat-head">
+            <div class="chat-head-left">
+              <div id="chatAvatar" class="chat-avatar">G</div>
+              <div style="min-width:0;">
+                <h3 id="chatTitle">Group chat</h3>
+                <div id="chatSubtitle" class="muted small"></div>
+              </div>
+            </div>
+            <div class="call-buttons" id="callButtons" style="display:none;">
+              <button class="call-btn voice-call-btn" onclick="startVoiceCall()" title="Voice Call">VOICE CALL</button>
+              <button class="call-btn video-call-btn" onclick="startVideoCall()" title="Video Call">VID CALL</button>
+            </div>
+          </div>
+
+          <div id="messages" class="messages"></div>
+
+          <div id="selectionBar" class="selection-bar hidden">
+            <div>
+              <div id="selectionCountText" style="font-weight:800;">0 selected</div>
+            </div>
+            <button class="btn btn-danger" onclick="requestDeleteSelected()">Delete</button>
+          </div>
+
+          <div class="composer">
+            <div class="composer-row">
+              <input id="fileInput" class="hidden" type="file" multiple onchange="handleFileSelect()" />
+              <button class="icon-btn attach-btn" onclick="document.getElementById('fileInput').click()" title="Attach Files">FILES</button>
+              <button id="voiceRecordBtn" class="icon-btn voice-record-btn" onclick="toggleVoiceRecording()" title="Voice Message">VOICE REC</button>
+              <div class="composer-box"><textarea id="messageInput" class="textarea" rows="1" placeholder="Type a message..."></textarea></div>
+              <button class="icon-btn send-btn" onclick="sendMessage()" title="Send">SEND</button>
+            </div>
+            <div class="composer-caption">
+              <span id="selectedChatChip" class="chip">To: Group</span>
+              <span class="muted tiny">FILES | VOICE REC | VOICE CALL / VID CALL (direct chat)</span>
+            </div>
+            <div id="selectedFilesInfo" class="selected-files-info">
+              <span id="selectedFilesCount">0 files selected</span>
+              <button class="clear-files-btn" onclick="clearSelectedFiles()">✖</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <button id="scrollBottomBtn" class="btn btn-primary fab-bottom hidden" onclick="scrollToBottom(true)">↓ Latest</button>
+
+  <script>
+    window.__APP_NAME__ = '__APP_NAME__';
+  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/others/js/app.js"></script>
+</body>
+</html>
